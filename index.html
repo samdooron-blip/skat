@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR-Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+    h2 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .p {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+    .strong {
+      font-weight: bold;
+      color: #111;
+    }
+    .info {
+      color: #666;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h2>QR-Control</h2>
+  <p class="p">Этот шаг необходим для корректной работы системы учета рабочего времени.</p>
+  <p class="p"><strong class="strong">Пожалуйста, нажмите «Разрешить»</strong> в появившемся окне браузера.</p>
+  <p class="p info">После подтверждения эту страницу можно закрыть.</p>
+
+  <script>
+    function requestLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function success(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            console.log("QR-Control: координаты получены", lat, lon);
+          },
+          function error(err) {
+            let msg = "Не удалось получить местоположение.";
+            switch (err.code) {
+              case err.PERMISSION_DENIED:
+                msg = "Пользователь отклонил запрос на геолокацию.";
+                break;
+              case err.POSITION_UNAVAILABLE:
+                msg = "Информация о местоположении недоступна.";
+                break;
+              case err.TIMEOUT:
+                msg = "Истекло время ожидания ответа от службы геолокации.";
+                break;
+              default:
+                msg = "Произошла ошибка при определении местоположения.";
+                break;
+            }
+            alert(msg);
+            console.warn("QR-Control: ошибка геолокации", err.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        alert("Геолокация не поддерживается вашим браузером.");
+      }
+    }
+
+    window.addEventListener("load", requestLocation);
+  </script>
+</body>
+</html>
